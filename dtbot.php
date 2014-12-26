@@ -112,6 +112,19 @@ class IRCBot
 		}
 	}
 	
+	protected function getAttrFromSource($source) {
+		$source = str_replace(":", "", $source);
+		return explode("!", $source);
+	}
+	
+	public function die($reason) {
+		return $this->network->quit($reason);
+	}
+	
+	public function putServ($string) {
+		return $this->network->putServer(jtrim($string));
+	}
+	
 	/* start() is the main loop.
 	 * Returning 1 = connection error.
 	 * Returning 2 = Server rejected connection.
@@ -142,6 +155,17 @@ class IRCBot
 							break;
 						case 396:
 							$this->bothost = $args[3];
+							break;
+						case "PRIVMSG":
+							// First we build the array of arguments to callback.
+							$attribs = $this->getAttrFromSource($args[0]);
+							if (ischannel($args[2])) { 
+								$attribs[2] = $args[2]; $attribs[3] = array_slice(implode(" ", array_slice($args, 3)), 1);
+								$this->callBinds('pub', $attribs[3], $attribs);
+							} else {
+								$attribs[2] = array_slice(implode(" ", array_slice($args, 3)), 1);
+								$this->callBinds('msg', $attribs[2], $attribs);
+							}
 							break;
 					}
 					if (is_numeric($args[1])) $this->callBinds('raw', $args[1], array($args[1], implode(" ", array_slice($args, 3))));
