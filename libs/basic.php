@@ -32,6 +32,11 @@ function jtrim($string) {
 	return str_replace($search, $replace, $string);
 }
 
+function ischannel($string) {
+	if($string[0] == "#" || $string[0] == "&") return true;
+	else return false;
+}
+
 // This is from the nice guys at php.net ^^. This is only for non-POSIX systems.
 
 if (!function_exists('fnmatch')) { 
@@ -44,7 +49,7 @@ if (!function_exists('fnmatch')) {
             return pcre_fnmatch($pattern, $string, $flags); 
         } 
 } 
-    
+
 function pcre_fnmatch($pattern, $string, $flags = 0) { 
         $modifiers = null; 
         $transforms = array( 
