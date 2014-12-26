@@ -85,7 +85,7 @@ class IRCBot
 	}
 	
 	public function rehash() {
-		foreach ($scripts as $script) {
+		foreach ($this->scripts as $script) {
 			include($script);
 		}
 	}
@@ -100,8 +100,8 @@ class IRCBot
 		// This calls all the binds with the given array of args
 		if ($kind == 'msg' || $kind == 'notice' || $kind == 'pub') {
 			$command = explode(" ", $string);
-			$command = $command[0];
-			foreach ($this->binds[$kind] as $act) if($act['patt'] == $command || fnmatch($act['patt'], $string)) call_user_func_array($act['func'], $args);
+			if (is_array($command)) $command = $command[0];
+			foreach ($this->binds[$kind] as $act) if($act['patt'] == trim($command) || fnmatch($act['patt'], $string)) call_user_func_array($act['func'], $args);
 		} elseif ($kind == 'evnt') {
 			$string = trim($string);
 			foreach ($this->binds[$kind] as $act) if($act['patt'] == $string) call_user_func_array($act['func'], $args);
@@ -118,6 +118,7 @@ class IRCBot
 	}
 	
 	public function quit($reason) {
+		$this->continue = false;
 		return $this->network->quit($reason);
 	}
 	
@@ -160,10 +161,10 @@ class IRCBot
 							// First we build the array of arguments to callback.
 							$attribs = $this->getAttrFromSource($args[0]);
 							if (ischannel($args[2])) { 
-								$attribs[2] = $args[2]; $attribs[3] = array_slice(implode(" ", array_slice($args, 3)), 1);
+								$attribs[2] = $args[2]; $attribs[3] = substr(implode(" ", array_slice($args, 3)), 1);
 								$this->callBinds('pub', $attribs[3], $attribs);
 							} else {
-								$attribs[2] = array_slice(implode(" ", array_slice($args, 3)), 1);
+								$attribs[2] = substr(implode(" ", array_slice($args, 3)), 1);
 								$this->callBinds('msg', $attribs[2], $attribs);
 							}
 							break;
