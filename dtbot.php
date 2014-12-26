@@ -45,8 +45,7 @@ require_once("./ircnetwork.php");
 class IRCBot
 {
 	protected $continue = true;
-	public $botname;
-	protected $botnick, $botuser;
+	public $botnick, $bothost;
 	protected $network;
 	protected $chans = array();
 	protected $users = array();
@@ -78,6 +77,7 @@ class IRCBot
 	
 	public function setBot($nick, $altnick, $username, $realname, $password = "NOPASS") {
 		$this->network->setUser("nick", $nick);
+		$this->botnick = $nick;
 		$this->network->setUser("altnick", $altnick);
 		$this->network->setUser("username", $username);
 		$this->network->setUser("pass", $password);
@@ -127,7 +127,25 @@ class IRCBot
 		$this->continue = true;
 		while ($this->continue) {
 			while($line = $this->network->getLine()) {
-				
+				$line = jtrim($line);
+				$args = explode(" ", $line);
+				// Ping pong
+				if ($args[0] == "PING") { 
+					$this->network->putServerQuick("PONG ".$args[1]);
+					$this->callBinds('raw', 'PING', array("PING", $args[1]));
+				}
+				else {
+					//Not ping pong
+					switch ($args[1]) {
+						case 001:
+							$this->botnick = $args[2];
+							break;
+						case 396:
+							$this->bothost = $args[3];
+							break;
+					}
+					if (is_numeric($args[1])) $this->callBinds('raw', $args[1], array($args[1], implode(" ", array_slice($args, 3))));
+				}
 			}
 		}
 		
