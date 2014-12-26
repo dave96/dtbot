@@ -27,8 +27,29 @@
  */
  
 require_once("./dtbot.php");
-
 $bot = new IRCBot();
+
+function testCommand($nick, $uhost, $channel, $text) {
+	global $bot;
+	echo 'Binded testCommand';
+	$bot->putServ("PRIVMSG ".$channel." :Hola \002".$nick."\002.");
+}
+
+function testQuit($nick, $uhost, $channel, $text) {
+	global $bot;
+	$bot->quit($text);
+}
+
+function joinChannel($arg, $arg2) {
+	global $bot;
+	echo 'Binded funct. Join channel';
+	$bot->putServ("JOIN #dave96");
+}
+
+$bot->bind('pub', '+hola', 'testCommand');
+$bot->bind('pub', '*quit*', 'testQuit');
+$bot->bind('raw', 396, 'joinChannel');
+
 $bot->setBot("DBot_", "DBot__", "DBot2", "DBot PHP Test");
 $bot->setNetwork("irc.onlinegamesnet.net");
 echo $bot->start();
