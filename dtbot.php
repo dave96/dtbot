@@ -101,14 +101,14 @@ class IRCBot
 		if ($kind == 'msg' || $kind == 'notice' || $kind == 'pub') {
 			$command = explode(" ", $string);
 			$command = $command[0];
-			foreach ($binds[$kind] as $act) if($act['patt'] == $command || fnmatch($act['patt'], $string)) call_user_func_array($act['func'], $args);
+			foreach ($this->binds[$kind] as $act) if($act['patt'] == $command || fnmatch($act['patt'], $string)) call_user_func_array($act['func'], $args);
 		} elseif ($kind == 'evnt') {
 			$string = trim($string);
-			foreach ($binds[$kind] as $act) if($act['patt'] == $string) call_user_func_array($act['func'], $args);
+			foreach ($this->binds[$kind] as $act) if($act['patt'] == $string) call_user_func_array($act['func'], $args);
 		} elseif ($kind == 'raw') {
-			foreach ($binds[$kind] as $act) if($act['patt'] == $string) call_user_func_array($act['func'], $args);
+			foreach ($this->binds[$kind] as $act) if($act['patt'] == $string) call_user_func_array($act['func'], $args);
 		} else {
-			foreach ($binds[$kind] as $act) if(fnmatch($act['patt'], $string)) call_user_func_array($act['func'], $args);
+			foreach ($this->binds[$kind] as $act) if(fnmatch($act['patt'], $string)) call_user_func_array($act['func'], $args);
 		}
 	}
 	
