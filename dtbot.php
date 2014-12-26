@@ -117,7 +117,7 @@ class IRCBot
 		return explode("!", $source);
 	}
 	
-	public function die($reason) {
+	public function quit($reason) {
 		return $this->network->quit($reason);
 	}
 	
