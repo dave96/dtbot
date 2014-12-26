@@ -106,6 +106,11 @@
 	public function putServer ($wstring) {
 		return $this->putServerNow($wstring);
 	}
+	
+	public function putServerQuick ($wstring) {
+		return $this->putServerNow($wstring);
+	}
+	
 	// This doesn't
 	protected function putServerNow ($wstring) {
 		if(is_resource($this->socket)) {
