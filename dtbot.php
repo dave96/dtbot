@@ -55,20 +55,10 @@ class IRCBot
 	public function __construct () {
 		$this->network = new IRCNetwork();
 	}
-	
-	protected function searchBind($kind_array, $patt, $call_func) {
-		foreach ($kind_array as $key => $value) {
-			if($value['patt'] == $patt && $value['func'] == $call_func) return $key;
-		}
-		return null;
-	}
-	
-	public function bind($kind, $patt, $call_func) {
-		$found = $this->searchBind($this->binds[$kind], $patt, $call_func);
-		if (!isset($found)) {
-			// That's not an already-set bind.
-			$this->binds[$kind][] = array('patt' => $patt, 'func' => $call_func);
-		}
+		
+	public function addBind($kind, $patt, $callback) {
+		// I won't search whether it is already set or not, users's problem, as they're deleted on every rehash.
+		$this->binds[$kind][] = array('patt' => $patt, 'func' => $callback);
 	}
 	
 	public function registerScript($path) {
@@ -85,6 +75,8 @@ class IRCBot
 	}
 	
 	public function rehash() {
+		unset($this->binds);
+		$this->binds = array();
 		foreach ($this->scripts as $script) {
 			include($script);
 		}
