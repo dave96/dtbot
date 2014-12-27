@@ -76,7 +76,7 @@ class IRCBot
 	
 	public function rehash() {
 		unset($this->binds);
-		$this->binds = array();
+		$this->binds = array('msg' => array(), 'pub' => array(), 'notice' => array(), 'part' => array(), 'join' => array(), 'evnt' => array(), 'raw' => array());
 		foreach ($this->scripts as $script) {
 			include($script);
 		}
