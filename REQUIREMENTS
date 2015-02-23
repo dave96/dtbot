@@ -1,0 +1,16 @@
+To run DTBot, you require:
+
+ * PHP 5.3+
+
+ * Lua Runtime
+
+ * Lua PECL extension for PHP
+
+
+Optional requirements:
+
+ * Some SQL or No-SQL database. If you run something different than MySQL, MariaDB
+   or any MySQL-like database, you will have to figure out a way to connect to
+   it from Lua.
+
+ * Cookies (the chocolate chips ones).
