@@ -90,6 +90,7 @@ class IRCBot
 	
 	protected function callBinds($kind, $string, $args) {
 		// This calls all the binds with the given array of args
+		$args = array_merge(array($this), $args);
 		if ($kind == 'msg' || $kind == 'notice' || $kind == 'pub') {
 			$command = explode(" ", $string);
 			if (is_array($command)) $command = $command[0];
